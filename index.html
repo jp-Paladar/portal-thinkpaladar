@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -70,6 +71,40 @@
 </head>
 <body>
 
+  <!-- Verificación de sesión Tableau -->
+  <script type="module" src="https://dub01.online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+  <div id="authCheck" style="display: none;"></div>
+
+  <script>
+    const authDiv = document.getElementById("authCheck");
+    const authVizURL = "https://dub01.online.tableau.com/t/thinkpaladar/views/prueeeba/Dashboard1";
+    const loginRedirectURL = "prueba.html";
+
+    try {
+      const viz = new tableau.Viz(authDiv, authVizURL, {
+        hideTabs: true,
+        hideToolbar: true,
+        width: "0px",
+        height: "0px",
+        onFirstInteractive: function () {
+          console.log("✅ Sesión activa en Tableau");
+        }
+      });
+    } catch (error) {
+      console.error("❌ Error al cargar Tableau:", error);
+      window.location.href = loginRedirectURL;
+    }
+
+    setTimeout(() => {
+      const loaded = document.querySelector("iframe")?.contentWindow?.document?.readyState === "complete";
+      if (!loaded) {
+        console.warn("⚠️ No hay sesión. Redirigiendo...");
+        window.location.href = loginRedirectURL;
+      }
+    }, 5000);
+  </script>
+
+  <!-- Contenido de la página -->
   <header>
     <img src="/MGC—Horitzontal_1línia_Blanc (1).png" alt="ThinkPaladar Logo" />
   </header>
