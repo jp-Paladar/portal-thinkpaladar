@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -71,32 +70,55 @@
 </head>
 <body>
 
-  <!-- Verificación de sesión Tableau -->
+  <!-- API de Tableau -->
   <script type="module" src="https://dub01.online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
-  <div id="authCheck" style="display: none;"></div>
+
+<!-- Viz oculta para validar sesión -->
+<tableau-viz id="auth-viz"
+  src="https://dub01.online.tableau.com/t/thinkpaladar/views/prueeeba/Dashboard1"
+  hide-tabs
+  hide-toolbar
+  style="
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: -1;
+  ">
+</tableau-viz>
+
 
   <script>
-    const authDiv = document.getElementById("authCheck");
-    const authVizURL = "https://dub01.online.tableau.com/t/thinkpaladar/views/prueeeba/Dashboard1";
     const loginRedirectURL = "prueba.html";
+    const authViz = document.getElementById("auth-viz");
 
-    try {
-      const viz = new tableau.Viz(authDiv, authVizURL, {
-        hideTabs: true,
-        hideToolbar: true,
-        width: "0px",
-        height: "0px",
-        onFirstInteractive: function () {
-          console.log("✅ Sesión activa en Tableau");
-        }
-      });
-    } catch (error) {
-      console.error("❌ Error al cargar Tableau:", error);
-      window.location.href = loginRedirectURL;
-    }
+    let sessionOk = false;
 
+    authViz.addEventListener("firstinteractive", () => {
+      console.log("✅ Sesión Tableau activa.");
+      sessionOk = true;
+    });
 
-  <!-- Contenido de la página -->
+    authViz.addEventListener("loaderror", () => {
+      console.warn("❌ Error Tableau. Redirigiendo...");
+      if (!sessionOk) {
+        window.location.href = loginRedirectURL;
+      }
+    });
+
+    setTimeout(() => {
+      if (!sessionOk) {
+        console.warn("⏱️ Timeout. Redirigiendo a login...");
+        window.location.href = loginRedirectURL;
+      }
+    }, 7000);
+  </script>
+
+  <!-- Contenido -->
   <header>
     <img src="/MGC—Horitzontal_1línia_Blanc (1).png" alt="ThinkPaladar Logo" />
   </header>
