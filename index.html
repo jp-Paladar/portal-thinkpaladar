@@ -14,6 +14,32 @@
       flex-direction: column;
     }
 
+    /* Spinner centrado */
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: #bfd1db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      border: 6px solid #eee;
+      border-top: 6px solid #09578B;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     header {
       background-color: #09578B;
       color: white;
@@ -39,16 +65,22 @@
     }
 
     .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cards-row {
+      display: flex;
+      justify-content: center;
       gap: 1.5rem;
-      padding: 2rem;
-      text-align: center;
-      max-width: 1000px;
-      margin: 0 auto;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
     }
 
     .card {
+      width: 180px;
+      height: 180px;
       background-color: white;
       border-radius: 10px;
       padding: 1rem;
@@ -57,6 +89,10 @@
       transition: transform 0.2s;
       text-decoration: none;
       color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .card:hover {
@@ -66,6 +102,7 @@
     .card img {
       height: 80px;
       margin-bottom: 0.5rem;
+      object-fit: contain;
     }
 
     .disabled {
@@ -91,35 +128,19 @@
     .footer-links img:hover {
       transform: scale(1.1);
     }
-    .card {
-  width: 180px;
-  height: 180px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
-  text-decoration: none;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-
-.cards-row {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-  flex-wrap: wrap;
-}
-
   </style>
 </head>
 <body>
+
+  <!-- SPINNER DE CARGA -->
+  <div id="loading-screen">
+    <div style="text-align: center;">
+      <div class="spinner"></div>
+      <p style="margin-top: 1rem; color: #09578B; font-size: 1.1rem;">
+        Comprobando sesión de acceso...
+      </p>
+    </div>
+  </div>
 
   <!-- API de Tableau -->
   <script type="module" src="https://dub01.online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
@@ -142,46 +163,19 @@
     ">
   </tableau-viz>
 
-  <script>
-    const loginRedirectURL = "prueba.html";
-    const authViz = document.getElementById("auth-viz");
+  <!-- CONTENIDO REAL -->
+  <div id="portal-content" style="display:none;">
+    <div class="main-content">
+      <header>
+        <img src="/MGC—Horitzontal_1línia_Blanc (1).png" alt="ThinkPaladar Logo" />
+      </header>
 
-    let sessionOk = false;
+      <div class="subheader">
+        <h2>¡Bienvenido a PaladarPortal!</h2>
+        <p>Selecciona un módulo para continuar</p>
+      </div>
 
-    authViz.addEventListener("firstinteractive", () => {
-      console.log("✅ Sesión Tableau activa.");
-      sessionOk = true;
-    });
-
-    authViz.addEventListener("loaderror", () => {
-      console.warn("❌ Error Tableau. Redirigiendo...");
-      if (!sessionOk) {
-        window.location.href = loginRedirectURL;
-      }
-    });
-
-    setTimeout(() => {
-      if (!sessionOk) {
-        console.warn("⏱️ Timeout. Redirigiendo a login...");
-        window.location.href = loginRedirectURL;
-      }
-    }, 7000);
-
-
-  </script>
-
-  <!-- Contenido -->
-  <div class="main-content">
-    <header>
-      <img src="/MGC—Horitzontal_1línia_Blanc (1).png" alt="ThinkPaladar Logo" />
-    </header>
-
-    <div class="subheader">
-      <h2>¡Bienvenido a PaladarPortal!</h2>
-      <p>Selecciona un módulo para continuar</p>
-    </div>
-    <div class="cards">
-        <!-- Primera fila -->
+      <div class="cards">
         <div class="cards-row">
           <a class="card" href="informe_semanal.html">
             <img src="WEEKLY (1).png" alt="Informe Semanal">
@@ -200,8 +194,7 @@
             <div>Análisis de Marcado</div>
           </a>
         </div>
-      
-        <!-- Segunda fila -->
+
         <div class="cards-row">
           <a class="card">
             <img src="habla con kam (3).png" alt="Contacto">
@@ -221,21 +214,54 @@
           </div>
         </div>
       </div>
-      
 
+      <!-- Footer -->
+      <footer class="footer-links">
+        <a href="https://www.instagram.com/thinkpaladar/" target="_blank" rel="noopener noreferrer">
+          <img src="instagram.png" alt="Instagram" />
+        </a>
+        <a href="https://www.linkedin.com/company/thinkpaladar/posts/?feedView=all" target="_blank" rel="noopener noreferrer">
+          <img src="linkedin.png" alt="LinkedIn ThinkPaladar" />
+        </a>
+        <a href="https://thinkpaladar.com/blog/" target="_blank" rel="noopener noreferrer">
+          <img src="news.png" alt="Blog ThinkPaladar" />
+        </a>
+      </footer>
+    </div>
+  </div>
 
-  <!-- Footer -->
-  <footer class="footer-links">
-    <a href="https://www.instagram.com/thinkpaladar/" target="_blank" rel="noopener noreferrer">
-      <img src="instagram.png" alt="Instagram" />
-    </a>
-    <a href="https://www.linkedin.com/company/thinkpaladar/posts/?feedView=all" target="_blank" rel="noopener noreferrer">
-      <img src="linkedin.png" alt="LinkedIn ThinkPaladar" />
-    </a>
-    <a href="https://thinkpaladar.com/blog/" target="_blank" rel="noopener noreferrer">
-      <img src="news.png" alt="Blog ThinkPaladar" />
-    </a>
-  </footer>
+  <!-- SCRIPT FINAL -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const loginRedirectURL = "prueba.html";
+      const authViz = document.getElementById("auth-viz");
+      const portalContent = document.getElementById("portal-content");
+      const loadingScreen = document.getElementById("loading-screen");
+
+      let sessionOk = false;
+
+      authViz.addEventListener("firstinteractive", () => {
+        console.log("✅ Sesión Tableau activa.");
+        sessionOk = true;
+        loadingScreen.style.display = "none";
+        portalContent.style.display = "block";
+      });
+
+      authViz.addEventListener("loaderror", () => {
+        console.warn("❌ Tableau falló. Redirigiendo...");
+        if (!sessionOk) {
+          window.location.href = loginRedirectURL;
+        }
+      });
+
+      setTimeout(() => {
+        if (!sessionOk) {
+          console.warn("⏱️ Timeout. Redirigiendo a login...");
+          window.location.href = loginRedirectURL;
+        }
+      }, 7000);
+    });
+  </script>
 
 </body>
 </html>
