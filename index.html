@@ -95,14 +95,6 @@
       window.location.href = loginRedirectURL;
     }
 
-    setTimeout(() => {
-      const loaded = document.querySelector("iframe")?.contentWindow?.document?.readyState === "complete";
-      if (!loaded) {
-        console.warn("⚠️ No hay sesión. Redirigiendo...");
-        window.location.href = loginRedirectURL;
-      }
-    }, 5000);
-  </script>
 
   <!-- Contenido de la página -->
   <header>
